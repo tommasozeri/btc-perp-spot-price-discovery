@@ -1,0 +1,80 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[italian]{babel}
+\input{../stile}
+
+\title{Chi scopre il prezzo del Bitcoin: lo spot o il perpetual?\\[0.3em]\large Una spiegazione semplice}
+\author{Tommaso Zeri}
+\date{Novembre 2026}
+
+\begin{document}
+\maketitle
+
+\section*{Due negozi, una sola merce}
+
+Immaginate due banchi dello stesso mercato che vendono la stessa merce, il Bitcoin, a pochi metri l'uno dall'altro. Il primo banco è lo \emph{spot}: lì si compra e si vende il Bitcoin vero e proprio. Il secondo banco è il \emph{perpetual}: lì non si scambia il Bitcoin, ma un contratto che ne segue il prezzo e che non scade mai. Chi compra il contratto può usare la leva, cioè scommettere più soldi di quelli che ha. Per evitare che il contratto si allontani troppo dal Bitcoin vero, ogni otto ore chi sta dalla parte \enquote{sbagliata} paga una piccola somma a chi sta dall'altra. È una specie di elastico che riporta i due prezzi vicini.
+
+Nel caso studiato i due banchi sono entrambi su Binance, la borsa di criptovalute più grande. I due prezzi sono quasi uguali: la differenza, che si chiama \emph{basis}, è di pochi centesimi ogni cento dollari e si muove di circa un centesimo di punto percentuale.
+
+La domanda è semplice da dire. Quando arriva una notizia, quale dei due banchi cambia prezzo per primo? E quale dei due porta l'informazione che poi resta nel prezzo? È questo che si chiama \emph{price discovery}, scoperta del prezzo.
+
+\section*{Come si guarda il mercato}
+
+Non si guarda il prezzo ogni secondo, come in un grafico. Si registra invece ogni volta che uno dei due prezzi si sposta di almeno mezzo \emph{basis point} (mezzo centesimo di punto percentuale, cioè lo 0,005\%). Ogni spostamento è un \enquote{evento} con il suo orario preciso al milionesimo di secondo, e ce ne sono di quattro tipi: perpetual su, perpetual giù, spot su, spot giù. In una giornata se ne contano da circa dodicimila a quasi trecentomila.
+
+I giorni studiati sono tredici, tutti primi giorni del mese, tra dicembre 2022 e settembre 2026: undici per il Bitcoin e due per Ethereum, usato come controllo.
+
+\section*{Il modello: un'eco che si propaga}
+
+Lo strumento si chiama \emph{processo di Hawkes}. L'idea è quella di un'eco, o di un contagio. Ogni evento rende più probabili altri eventi nei millisecondi successivi, e questo effetto si spegne pian piano. Un movimento del perpetual verso l'alto, per esempio, può provocare:
+\begin{itemize}
+\item un altro movimento del perpetual verso l'alto (il banco \enquote{si ripete}, questo è l'\emph{auto-eccitazione});
+\item un movimento dello spot verso l'alto (l'altro banco \enquote{copia}, questa è l'\emph{eccitazione incrociata}).
+\end{itemize}
+
+Il modello stima, per ogni coppia di tipi, quanti \enquote{figli} genera in media un evento. Un valore di 0,5 vuol dire: in media, ogni due movimenti del perpetual ne arriva uno dello spot che ne è la conseguenza. Gli eventi che non hanno un \enquote{genitore} sono quelli nuovi, che portano informazione da fuori: si chiamano esogeni, o \emph{immigrati}.
+
+Da qui si ricava una quota, l'\emph{information share}: la frazione dei movimenti di prezzo duraturi che parte da ciascuno dei due banchi. In forma molto semplice:
+\begin{equation*}
+\text{quota del perpetual} = \frac{\text{variazioni durature di prezzo partite dal perpetual}}{\text{tutte le variazioni durature di prezzo}} .
+\end{equation*}
+Se la quota è 0,5 i due banchi contano allo stesso modo; sopra 0,5 guida il perpetual, sotto guida lo spot.
+
+\section*{Cosa si trova}
+
+\paragraph{I due banchi si copiano più di quanto si ripetano.} Un movimento di uno dei due prezzi è seguito più spesso da un movimento dell'altro nella stessa direzione che da un altro movimento dello stesso prezzo. Nella direzione più forte un evento genera 0,43--0,60 figli sull'altro banco, contro 0,08--0,41 sul proprio. Per questo la differenza tra i due prezzi tende a richiudersi: quando uno scappa, l'altro lo rincorre.
+
+\paragraph{Il perpetual guida, ma di poco, e perché si muove di più.} Per singolo evento i due banchi si \enquote{contagiano} quasi allo stesso modo. La differenza sta nel numero: dal 2024 il perpetual si muove da 1,3 a 1,5 volte più spesso dello spot. Così tra il 45\% e il 69\% dei movimenti dello spot ha come genitore diretto un movimento del perpetual, mentre solo il 32--42\% dei movimenti del perpetual ha un genitore sullo spot. La quota del perpetual è tra 0,34 e 0,59 contando tutti gli eventi, e tra 0,47 e 0,83 contando solo gli eventi nuovi, quelli che portano informazione. In parole povere: il perpetual fa partire circa due terzi delle \enquote{ondate}, ma lo spot conta ancora per una parte importante.
+
+\paragraph{Gli strumenti classici dicono la stessa cosa.} I metodi tradizionali degli economisti (quello di Hasbrouck, che lavora su prezzi campionati ogni secondo) danno per il perpetual una quota tra 0,47 e 0,66. Su un giorno studiato al millisecondo, il 1~marzo 2026, lo spot segue il perpetual con un ritardo di circa 50 millisecondi, un ventesimo di secondo.
+
+\section*{La sorpresa: quando lo spot era gratis}
+
+Tra l'8 luglio 2022 e il 22 marzo 2023 Binance non faceva pagare commissioni sugli scambi spot di Bitcoin. Di solito il banco spot è quello più caro per un cliente normale. In quei mesi era gratis.
+
+Quattro dei tredici giorni cadono in quel periodo (dicembre 2022, gennaio, febbraio e marzo 2023), e in tutti e quattro il risultato si capovolge. Lo spot fa il 72--80\% dei movimenti, quasi ogni ondata parte dallo spot, e la quota del perpetual scende a 0,07--0,17 contando solo gli eventi nuovi. Tutti i metodi, vecchi e nuovi, sono d'accordo sul ribaltamento. Due di quei giorni erano stati scelti apposta, solo perché cadevano nella promozione, e si comportano esattamente come gli altri due.
+
+La lettura della tesi è che il banco che guida è quello dove costa meno scambiare. La guida segue il costo dello scambio più che il tipo di contratto.
+
+\section*{I limiti}
+
+Tredici giorni sono pochi, e non sono consecutivi. I quattro giorni senza commissioni sono anche i quattro più vecchi del campione, quindi da soli non possono escludere che in quel periodo il mercato fosse diverso anche per altri motivi. L'orologio dello spot arriva con circa quattro millesimi di secondo di ritardo, e questo rende incerti i ritardi più brevi. Il modello è una buona descrizione, ma i test statistici dicono che non è perfetto.
+
+\section*{Piccolo glossario}
+
+\begin{description}
+\item[Spot.] Il mercato dove si compra e vende il Bitcoin vero e proprio, con consegna immediata.
+\item[Perpetual.] Un contratto che segue il prezzo del Bitcoin, non scade mai e permette la leva. Resta vicino allo spot grazie a un pagamento periodico tra compratori e venditori (il \emph{funding}).
+\item[Basis.] La differenza tra il prezzo del perpetual e quello dello spot.
+\item[Basis point (bp).] Un centesimo di punto percentuale: 1~bp = 0,01\%. Il 1~marzo 2026 un evento spostava il prezzo del Bitcoin in media di circa 4,7 dollari.
+\item[Processo di Hawkes.] Un modello per eventi che arrivano a grappoli, in cui ogni evento rende più probabili altri eventi subito dopo, come un'eco che si spegne.
+\item[Auto-eccitazione ed eccitazione incrociata.] Un evento che provoca un altro evento dello stesso banco, oppure dell'altro banco.
+\item[Evento esogeno (immigrato).] Un movimento che il modello non attribuisce a un movimento precedente: porta informazione nuova.
+\item[Price discovery.] Il processo con cui l'informazione entra nei prezzi; ci si chiede in quale mercato entra per prima.
+\item[Information share.] La frazione dei movimenti di prezzo duraturi attribuita a ciascun mercato.
+\end{description}
+
+\section*{Cosa portare a casa}
+
+Su Binance, con le commissioni normali, il prezzo del Bitcoin si muove un po' prima sul perpetual, e lo spot lo segue in qualche decina di millisecondi. La guida è moderata e viene dal fatto che il perpetual si muove più spesso. Nei mesi in cui scambiare sullo spot era gratis, la guida è passata allo spot. In questo campione, chi scopre il prezzo dipende da dove costa meno fare trading.
+
+\end{document}
